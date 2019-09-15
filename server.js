@@ -29,65 +29,63 @@ mongoose.connect("mongodb://localhost/newsdb", { useNewUrlParser: true });
 // Routes
 
 // A GET route for scraping the echoJS website
-app.get("/scrape", function (req, res) {
+app.get("/scrape", function(req, res) {
   // First, we grab the body of the html with axios
-  axios.get("http://www.echojs.com/").then(function (response) {
-    // Then, we load that into cheerio and save it to $ for a shorthand selector
-    let $ = cheerio.load(response.data);
+  axios.get("https://drudgereport.com").then(function(response) {
+    // Load the HTML into cheerio and save it to a variable
+    // '$' becomes a shorthand for cheerio's selector commands, much like jQuery's '$'
+    var $ = cheerio.load(response.data);
 
-    // Now, we grab every h2 within an article tag, and do the following:
-    $("article h2").each(function (i, element) {
-      // Save an empty result object
-      let result = {};
+    // An empty array to save the data that we'll scrape
+    var results = [];
 
-      // Add the text and href of every link, and save them as properties of the result object
-      result.title = $(this)
-        .children("a")
-        .text();
-      result.link = $(this)
-        .children("a")
-        .attr("href");
+    // Select each element in the HTML body from which you want information.
+    // NOTE: Cheerio selectors function similarly to jQuery's selectors,
+    // but be sure to visit the package's npm page to see how it works
+    $("b a").each(function(i, element) {
+      var title = $(element).text();
+      var link = $(element).attr("href");
 
-      // Create a new Article using the `result` object built from scraping
-      db.Article.create(result)
-        .then(function (dbArticle) {
-          // View the added result in the console
-          console.log(dbArticle);
-        })
-        .catch(function (err) {
-          // If an error occurred, log it
-          console.log(err);
+      // Save these results in an object that we'll push into the results array we defined earlier
+
+      if (title.length > 25)
+        results.push({
+          title: title,
+          link: link
         });
     });
-
-    // Send a message to the client
-    res.send("Scrape Complete");
+    db.Article.insertMany(results, function(err) {
+      console.log(err);
+    });
+    // Log the results once you've looped through each of the elements found with cheerio
+    //console.log(results);
+    res.send("Scrape complete. results[0].title:  "+ results[0].title);
   });
 });
 
 // Route for getting all Articles from the db
-app.get("/articles", function (req, res) {
+app.get("/articles", function(req, res) {
   // TODO: Finish the route so it grabs all of the articles
-  db.Article.find().then ( function (a) {
-    res.json(a);
-  }).catch(function (err) {
-    console.log(err);
-  });
-  
-
+  db.Article.find()
+    .then(function(a) {
+      res.json(a);
+    })
+    .catch(function(err) {
+      console.log(err);
+    });
 });
 
 // Route for grabbing a specific Article by id, populate it with it's note
-app.get("/articles/:id", function (req, res) {
-
-
+app.get("/articles/:id", function(req, res) {
   db.Article.findOne({
-      _id: req.params.id
-  }).then ( function (a) {
-    res.json(a);
-  }).catch(function (err) {
-    console.log(err);
-  });
+    _id: req.params.id
+  })
+    .then(function(a) {
+      res.json(a);
+    })
+    .catch(function(err) {
+      console.log(err);
+    });
   // TODO
   // ====
   // Finish the route so it finds one article using the req.params.id,
@@ -96,7 +94,7 @@ app.get("/articles/:id", function (req, res) {
 });
 
 // Route for saving/updating an Article's associated Note
-app.post("/articles/:id", function (req, res) {
+app.post("/articles/:id", function(req, res) {
   // TODO
   // ====
   // save the new note that gets posted to the Notes collection
@@ -105,6 +103,6 @@ app.post("/articles/:id", function (req, res) {
 });
 
 // Start the server
-app.listen(PORT, function () {
+app.listen(PORT, function() {
   console.log("App running on port " + PORT + "!");
 });
