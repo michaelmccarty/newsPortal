@@ -65,7 +65,7 @@ module.exports = function (app, db) {
                 let link = $(element).attr("href");
 
 
-                if (title.length > 25)   // only save article if title's long 
+                if ( (title.length > 25)   && (!title.toLowerCase().includes("drudge")) )  // only save article if title's long 
                     results.push({
                         title: title,
                         link: link
