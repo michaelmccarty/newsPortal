@@ -1,20 +1,14 @@
 $(document).ready(function () {
+    let content = $(".content");
 
-    let modal = document.querySelector(".modal");
-    let trigger = document.querySelector(".trigger");
-    let closeButton = document.querySelector(".close-button");
 
-    function toggleModal() {
-        modal.classList.toggle("show-modal");
-    }
 
-    function windowOnClick(event) {
-        if (event.target === modal) {
-            toggleModal();
+    $.get("/articles").done(function (data) {
+        for (let i = 0; i < data.length; i++) {
+            content.append(`<div class="newsArticle shadow-lg p-3 mb-5 bg-white rounded"><a href="${data[i].link}"><strong>${data[i].title}</strong></a></div>`);
         }
-    }
+    })
 
-    trigger.addEventListener("click", toggleModal);
-    closeButton.addEventListener("click", toggleModal);
-    window.addEventListener("click", windowOnClick);
+
+
 });
