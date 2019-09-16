@@ -43,6 +43,13 @@ module.exports = function (app, db) {
 
 
     app.get("/scrape", function (req, res) {
+
+        db.Article.remove({}, function (err){   //clear all old articles
+            console.log("Error: " + err);
+        });
+
+
+
         // First, we grab the body of the html with axios
         axios.get("https://drudgereport.com").then(function (response) {
             // Load the HTML into cheerio and save it to a variable
