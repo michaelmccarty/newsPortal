@@ -1,5 +1,5 @@
 {
-  "name": "newsPortal",
+  "name": "newsportal",
   "version": "1.0.0",
   "description": "a social portal for relevant news",
   "main": "server.js",
