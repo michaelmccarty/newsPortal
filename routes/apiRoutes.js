@@ -21,8 +21,10 @@ module.exports = function (app, db) {
     });
 
 
-    // Route for grabbing a specific Article by id, populate it with it's note
-    app.get("/articles/:id", function (req, res) {
+    app.post("/articles/:id", function (req, res) {
+        console.log(req.params.id);
+
+
         db.Article.findOne({
             _id: req.params.id
         })
@@ -32,19 +34,13 @@ module.exports = function (app, db) {
             .catch(function (err) {
                 console.log(err);
             });
-        // TODO
-        // ====
-        // Finish the route so it finds one article using the req.params.id,
-        // and run the populate method with "note",
-        // then responds with the article with the note included
+
     });
-
-
 
 
     app.get("/scrape", function (req, res) {
 
-        db.Article.remove({}, function (err){   //clear all old articles
+        db.Article.remove({}, function (err) {   //clear all old articles
             console.log("Error: " + err);
         });
 
@@ -65,7 +61,7 @@ module.exports = function (app, db) {
                 let link = $(element).attr("href");
 
 
-                if ( (title.length > 25)   && (!title.toLowerCase().includes("drudge")) )  // only save article if title's long 
+                if ((title.length > 25) && (!title.toLowerCase().includes("drudge")))  // only save article if title's long 
                     results.push({
                         title: title,
                         link: link

@@ -3,8 +3,38 @@ $(document).ready(function () {
     let newsCards = $(".newsCards")
 
 
-    $("#post").click(function(){
-        console.log("hi");
+    $("#post").on("click", function (event) {
+        event.preventDefault();
+
+        console.log(event.target);
+
+
+
+        // Grab the id associated with the article from the submit button
+        //let thisId = event;
+
+
+        // $.ajax({
+        //     method: "POST",
+        //     url: "/articles/" + thisId,
+        //     data: {
+        //         // Value taken from title input
+        //         title: $("#titleinput").val(),
+        //         // Value taken from note textarea
+        //         body: $("#bodyinput").val()
+        //     }
+        // })
+        //     // With that done
+        //     .then(function (data) {
+        //         // Log the response
+        //         console.log(data);
+        //         // Empty the notes section
+        //         $("#notes").empty();
+        //     });
+
+        // // Also, remove the values entered in the input and textarea for note entry
+        // $("#titleinput").val("");
+        // $("#bodyinput").val("");
     });
 
 
@@ -28,7 +58,5 @@ $(document).ready(function () {
             `);
         }
     })
-
-
 
 });
