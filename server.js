@@ -21,8 +21,11 @@ app.use(express.json());
 // Make public a static folder
 app.use(express.static("public"));
 
+
+let MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/newsdb";
+
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/newsdb", { useNewUrlParser: true });
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 require("./routes/apiRoutes")(app, db);
 require("./routes/htmlRoutes")(app);
